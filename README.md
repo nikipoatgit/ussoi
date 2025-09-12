@@ -25,7 +25,7 @@ UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication ove
 2. Confirm the device appears in the **Info** section.  
    <img src="doc\ussoi_usb_info.jpg" alt="USB Info Screen" width="400"/>
 
-3. **Disable Bluetooth** in the app settings.
+3. Make sure  **Bluetooth** is disabled .
 
 4. Enter the desired **baud rate**.
 
@@ -40,4 +40,4 @@ UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication ove
 
 1. **Clone the repository** into your local machine (or directly in Android Studio):  
    ```bash
-   git clone https://github.com/<your-username>/ussoi.git
+   git clone https://github.com/nikipoatgit/ussoi.git
