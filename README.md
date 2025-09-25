@@ -1,4 +1,4 @@
-# ussoi
+# ussoi ( !! Note: App under development; limited functionality )
 UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication over the internet.
 
 <p align="center">
