@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="5dp"
-            android:text="Send Payload  :"
+            android:text="Connection Mode:"
             android:textSize="19sp"
             android:textStyle="bold" />
 
@@ -28,7 +28,7 @@
         android:paddingTop="1dp">
 
         <CheckBox
-            android:id="@+id/httpSend"
+            android:id="@+id/http_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="HTTP"
@@ -37,72 +37,22 @@
             android:padding="8dp"/>
 
         <CheckBox
-            android:id="@+id/tcpSend"
+            android:id="@+id/websocket_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TCP"
+            android:text="Websocket"
             android:layout_weight="1"
             android:checked="false"
             android:padding="8dp"/>
 
         <CheckBox
-            android:id="@+id/udpSend"
+            android:id="@+id/both_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="UDP"
+            android:text="Both"
             android:layout_weight="1"
             android:checked="false"
-            android:padding="8dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:text="Recive Payload  :"
-            android:textSize="19sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="1dp">
-
-        <CheckBox
-            android:id="@+id/httpReceive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="HTTP"
-            android:layout_weight="1"
-            android:checked="false"
-            android:padding="8dp"/>
-
-        <CheckBox
-            android:id="@+id/tcpReceive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TCP"
-            android:layout_weight="1"
-            android:checked="false"
-            android:padding="8dp"/>
-
-        <CheckBox
-            android:id="@+id/udpReceive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="UDP"
-            android:layout_weight="1"
-            android:checked="false"
+            android:enabled="false"
             android:padding="8dp"/>
 
     </LinearLayout>
