@@ -16,6 +16,22 @@ UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication ove
 *Reason:* Offers reliable USB-to-serial support for a wide range of chipsets, making it easy to talk to UART devices via USB OTG.
 
 ---
+## Data Format
+
+### Recived Data From Ussoi
+```json
+{
+  "mavlink_out": "<base64_encoded_data>",
+  "config": "<config_object>",
+  "encoding": "base64"
+}
+```
+### Transmitting Data Fro Ussoi
+```json
+{
+   "b64":"<base64_encoded_data>"
+}
+
 ## How to Use
 
 ### USB Mode
@@ -23,18 +39,15 @@ UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication ove
 1. **Connect the UART device** via USB-OTG.
 
 2. Confirm the device appears in the **Info** section.  
-   <img src="doc\ussoi_usb_info.jpg" alt="USB Info Screen" width="400"/>
 
-3. Make sure  **Bluetooth** is disabled .
+3. Make sure  **Bluetooth** is disabled for USB-OTG mode .
 
 4. Enter the desired **baud rate**.
 
-5. Enter the target **IP address** (use first field ). 
-   *Note:* The current version supports **HTTP mode** only for sending and receiving data.  
+5. Enter the target **IP address** ( Note url ends with /)
+ 
    <img src="doc\ussoi_para_select.jpg" alt="HTTP Mode Screen" width="400"/>
-
-
-
+   
 
 ## Modify Source Code
 
