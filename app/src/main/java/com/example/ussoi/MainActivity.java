@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
 // Initialize preference helper (singleton)
         save_input_field_obj = save_input_field.getInstance(this);
-        in_prefs = save_input_field_obj.get_shared_pref();
 
 // Restore preferences into UI
         save_input_field_obj.restorePreferences(
@@ -114,9 +113,8 @@ public class MainActivity extends AppCompatActivity {
         // Save preferences & start background service on button click
         serviceButton.setOnClickListener(v -> {
 
-            if (  in_prefs.getBoolean(KEY_WEBSOCKET, false) && in_prefs.getBoolean(KEY_HTTP, false) ) {
+            if (http_checkbox.isChecked() ^ websocket_checkbox.isChecked() ) {
                 if (!serviceRunning) {
-                    // Save all UI prefs first
                     save_input_field_obj.savePreferences(
                             baudrateInfoText,
                             url_ip,
@@ -125,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
                             btswitch
                     );
 
-                    // If BT is enabled in UI, show picker first
                     if (btswitch.isChecked()) {
                         pickBluetoothDeviceThenStart();
                     } else {
@@ -134,10 +131,14 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     stopMainService();
                 }
+            } else {
+                Toast.makeText(
+                        this,
+                        "Select one check box",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
-            else {
-                Toast.makeText(this, "Only Select one check box", Toast.LENGTH_SHORT).show();
-            }
+
         });
 
     }
@@ -163,6 +164,50 @@ public class MainActivity extends AppCompatActivity {
         serviceButton.setText("Start Service");
         serviceRunning = false;
     }
+
+
+    private final BroadcastReceiver btFailReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (bt_handel.ACTION_BT_FAILED.equals(intent.getAction())) {
+                Toast.makeText(MainActivity.this, "Bluetooth connection failed", Toast.LENGTH_SHORT).show();
+                selectedBtDevice = null;
+                stopMainService();   // stop the service & reset UI
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(btFailReceiver, new IntentFilter(bt_handel.ACTION_BT_FAILED));
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(usbReceiver);
+        unregisterReceiver(permissionReceiver);
+        unregisterReceiver(btFailReceiver);
+    }
+
+
+    // handels button logic when service goes bg , keep service btn in sync
+    private void updateButtonState() {
+        if (services_handel.isRunning) {
+            serviceButton.setText("Stop Service");
+            serviceRunning = true;
+        } else {
+            serviceButton.setText("Start Service");
+            serviceRunning = false;
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateButtonState(); // Update UI every time the activity comes to the foreground
+    }
+
 
 
     // Member variable to hold the chosen device
@@ -193,17 +238,18 @@ public class MainActivity extends AppCompatActivity {
 
         final List<BluetoothDevice> devices = new ArrayList<>(paired);
         String[] names = new String[devices.size()];
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            Toast.makeText(this, "Bluetooth connect permission is needed.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         for (int i = 0; i < devices.size(); i++) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
             names[i] = devices.get(i).getName() + "\n" + devices.get(i).getAddress();
         }
 
@@ -216,8 +262,6 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
-
 
     private void checkExistingDevices() {
         HashMap<String, UsbDevice> deviceList = usbManager.getDeviceList();

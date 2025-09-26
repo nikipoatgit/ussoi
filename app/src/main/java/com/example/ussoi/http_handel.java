@@ -85,7 +85,7 @@ public class http_handel {
         if (downlinkCancelled) return;
 
         if (!url.startsWith("http")) url = "http://" + url;
-        HttpUrl httpUrl = HttpUrl.parse(url+ "/downlink");
+        HttpUrl httpUrl = HttpUrl.parse(url+ "downlink/");
         if (httpUrl == null) { Log.e(TAG, "Bad downlink URL"); return; }
 
         Request req = new Request.Builder().url(httpUrl).get().build();

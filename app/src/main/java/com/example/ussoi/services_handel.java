@@ -15,6 +15,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -23,10 +25,11 @@ public class services_handel extends Service {
     save_input_field preferenceHelper;
     private  SharedPreferences in_prefs;
 
-    boolean httpEnabled = false , websocketEnabled = false ,btEnabled = false;
+    private boolean bt_status ;
 
     private usb_handel usb_Handel_obj;
     private  bt_handel bt_handel_obj;
+    public static boolean isRunning = false;
 
 
     @Override
@@ -34,6 +37,7 @@ public class services_handel extends Service {
         super.onCreate();
         // Initialize any background threads or handlers here
         // Access the same preferences singleton
+        isRunning = true;
         preferenceHelper = save_input_field.getInstance(this);
     }
 
@@ -41,6 +45,8 @@ public class services_handel extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         in_prefs = preferenceHelper.get_shared_pref();
+
+        bt_status = in_prefs.getBoolean(KEY_BT_SWITCH,false);
 
         // 1) Build a notification
         Notification notification = createNotification(); // build with NotificationCompat
@@ -50,8 +56,8 @@ public class services_handel extends Service {
         // This is called whenever service is started
 
 
-        btEnabled =  in_prefs.getBoolean(KEY_BT_SWITCH, false);
-        if (btEnabled) {
+        bt_status =  in_prefs.getBoolean(KEY_BT_SWITCH, false);
+        if (bt_status) {
             String btAddr = intent.getStringExtra("bt_address");
             if (btAddr != null) {
                 BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
@@ -88,21 +94,6 @@ public class services_handel extends Service {
 
     private void runServicesBasedOnPrefs() {
 
-        httpEnabled = in_prefs.getBoolean(KEY_HTTP, false);
-        websocketEnabled =  in_prefs.getBoolean(KEY_WEBSOCKET, false);
-
-
-        if (httpEnabled) {
-            startHttpService(btEnabled);
-        }
-        else if  (websocketEnabled ) {
-            startWebSocketService(btEnabled);
-        }
-    }
-
-    private void startHttpService(boolean bt_status) {
-        // TODO: implement HTTP service logic
-        // if bt_status == false
         if ( !bt_status){
             usb_Handel_obj = new usb_handel(this);
             usb_Handel_obj.usb_setup(in_prefs);
@@ -113,25 +104,17 @@ public class services_handel extends Service {
         }
     }
 
-    private void startWebSocketService(boolean bt_status) {
-        // TODO: implement WebSocket service logic
-    }
 
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // Cleanup threads, stop services
-        if (httpEnabled) {
-            if ( !btEnabled){
-                usb_Handel_obj.stopAllServices();
-            }
-            else {
-                bt_handel_obj.stopAllServices();
-
-            }
+        isRunning = false;
+        if ( !bt_status){
+            usb_Handel_obj.stopAllServices();
         }
-        if  (websocketEnabled ) {
+        else {
+            bt_handel_obj.stopAllServices();
         }
 
     }

@@ -4,6 +4,7 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -18,6 +19,7 @@ import com.psp.bluetoothlibrary.SendReceive;
 
 public class bt_handel {
 
+    public static final String ACTION_BT_FAILED = "com.example.ussoi.BT_CONNECTION_FAILED";
     private static final String TAG = "bt_handel";
     private final Context ctx;
     private final Connection connection;
@@ -94,6 +96,10 @@ public class bt_handel {
                     public void onConnectionFailed(int errorCode) {
                         Log.d(TAG, "Connection failed, code " + errorCode);
                         Toast.makeText(ctx, "Connection failed", Toast.LENGTH_SHORT).show();
+                        //  Create and send the broadcast to main activity to stop bg thread
+                        Intent intent = new Intent(ACTION_BT_FAILED);
+                        ctx.sendBroadcast(intent);
+
                         connection.disconnect();
                     }
                 };
