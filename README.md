@@ -18,6 +18,15 @@ UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication ove
 ---
 ## Data Format
 
+### Endpoints
+
+- **Receive data from USSOI:**   `<url>`
+
+- **Send data to USSOI (Downlink):**   `<url>/downlink/`  
+
+> Requests sent to the downlink endpoint are **long-polled** and will be held for up to **30 seconds** before timing out.
+
+
 ### Recived Data From Ussoi
 ```json
 {
@@ -32,7 +41,25 @@ UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication ove
    "b64":"<base64_encoded_data>"
 }
 ```
+---
+## Transport characteristics ( Tested on :  Flight controller <-> Mission Planner )
+
+- **HTTP (long-polling / downlink)**  
+  - Use when the server must hold requests (long-poll) at `<url>/downlink/`.  
+  - **Typical packet loss:** **10–40%** (high).  
+  - **Notes:** higher overhead and higher loss rates due to repeated connection setup and long-poll timeouts.
+
+- **WebSocket**  
+  - **Typical packet loss:** **1–5%** (low).  
+
+
+
 ## How to Use
+
+data dent via http (due to pooling ) packet loss is high and upto 30~50%
+
+while with websocket it is 5~1%
+
 
 ### USB Mode
 
