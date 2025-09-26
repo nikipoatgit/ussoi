@@ -31,7 +31,7 @@ UART Soft Serial Over Internet (USSOI) – tunnels UART serial communication ove
 {
    "b64":"<base64_encoded_data>"
 }
-
+```
 ## How to Use
 
 ### USB Mode
